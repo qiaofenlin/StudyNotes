@@ -1,0 +1,83 @@
+今天使用Git 添加远程github仓库的时候提示错误：fatal: remote origin already exists. 
+解决：
+最后找到解决办法如下： 
+1、先删除远程 Git 仓库
+$ git remote rm origin
+2、再添加远程 Git 仓库
+$ git remote add origin git@github.com:FBing/Java-code-generator
+如果执行 git remote rm origin 报错的话，我们可以手动修改gitconfig文件的内容
+$ vi .git/config
+把 [remote “origin”] 那一行删掉就好了。
+
+
+
+
+ Warning: Permanently added the RSA host key for IP address '192.30.253.113' to the list of known hosts. Permission denied (publickey). fatal: Could not read from remote repository. Please make sure y
+这个应该是很多github新手经常出错的问题，这个就是没有在你github上添加一个公钥。
+
+下面就直接说步骤：
+
+1 可以用 ssh -T git@github.com去测试一下
+2然后ssh-keygen -t rsa -C “github账号  比如Nightcxd”
+3. cat 一下  把出现的key 复制下来
+4在github上添加刚刚生成的公钥
+
+
+
+git命令行
+
+git提交失败的解决办法 
+1 提交后提示 
+fatal: recursion detected in die handler 
+问题原因： 
+问题原因是http.postBuffer默认上限为1M所致。在git的配置里将http.postBuffer变量改大一些即可，比如将上限设为500M： 
+git config --global http.postBuffer 524288000 
+
+
+
+
+　  git init第一次创建本地仓库的时候，使用一次，再后面就不用了 
+　　git add向本地仓库添加文件 
+　  git commit将添加进本地仓库的文件提交 
+　　git diff查看对本地仓库中文件的改动 
+　　git log查看提交本地仓库文件的日志（git log –pretty=online） 
+　　git reset –hard HEAD^回退到上一个版本 
+　　git diff HEAD – readme.txt命令可以查看工作区和版本库里面最新版本的区别 
+　　git checkout – file可以丢弃工作区的修改 
+　　git reset HEAD file可以把暂存区的修改撤销掉（unstage），重新放回工作区 
+　　从版本库中删除文件，那就用命令git rm　文件名　删掉echo "# EmailCheck" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin git@github.com:Nightcxd/EmailCheck.git
+git push -u origin master  git push -f -u origin master(强制覆盖提交)
+
+
+
+
+
+
+将项目中的静态文件如jQuery、Bootstrap等放到别处用连接导入即可。
+
+使用 .gitattributes 配置文件
+
+具体就是在项目根目录添加文件名为.gitattributes的文本文件，写入
+
+*.js linguist-language=Java
+*.css linguist-language=Java
+*.html linguist-language=Java
+意思就是将.js、css、html当作Scala语言来统计。简单粗暴。效果如下：
+
+
+
+这里也变了，
+
+
+
+另外，说一下，在windows系统中并不好直接创建名为 .gitattributes 的文件，会提示，
+
+
+
+那么只需要用命令行创建就行了：
+
+touch .gitattributes
