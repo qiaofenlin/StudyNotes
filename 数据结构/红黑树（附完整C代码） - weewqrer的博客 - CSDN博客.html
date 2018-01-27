@@ -1,0 +1,1846 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    
+<head>  
+        <script type="text/javascript" src="http://static.blog.csdn.net/scripts/tingyun-rum.js"></script>
+            <link rel="canonical" href="http://blog.csdn.net/weewqrer/article/details/51866488"/> 
+ <meta http-equiv="Cache-Control" content="no-siteapp" /><link rel="alternate" media="handheld" href="#" />
+
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848"> 
+       
+    <title>红黑树（附完整C代码） - weewqrer的博客
+        - CSDN博客</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="版权声明：原创不易，转载请注明转自weewqrer 红黑树红黑树简介首先红黑树是一棵二叉搜索树，它在每个结点上增加了一个存储位来表示结点的颜色，可以是RED或者BLACK。通过对一条从根节点到NIL叶节点（指空结点或者下面说的哨兵）的简单路径上各个结点在颜色进行约束，红黑树确保没有一条路径会比其他路径长出2倍，因而是近似平衡的。 用途红黑树和AVL树一样都对插入时间、删除时间和查找时间提供了最好可" />
+
+    <meta name="keywords" content="数据结构和算法,红黑树" />
+
+   
+    <script src="http://static.blog.csdn.net/scripts/blog_static_head.min.js" type="text/javascript"></script>
+
+    
+        <!--new top-->
+       
+       
+        <!--new top-->
+    
+      <!-- ad begin -->
+         
+    <!-- ad end-->
+
+    <link rel="Stylesheet" type="text/css" href="http://static.blog.csdn.net/skin/dark1/css/style.css?v=1.1" />
+
+    
+
+    <link id="RSSLink" title="RSS" type="application/rss+xml" rel="alternate" href="/weewqrer/rss/list" />
+    <link rel="shortcut icon" href="http://c.csdnimg.cn/public/favicon.ico" />
+    <link type="text/css" rel="stylesheet" href="http://static.blog.csdn.net/scripts/SyntaxHighlighter/styles/default.css" />
+ 
+
+
+
+    <link href="http://c.csdnimg.cn/blog/csdn_public_blog_detail.min.css" type="text/css" rel="stylesheet" />
+     
+         <link rel="stylesheet" href="http://static.blog.csdn.net/css/csdn_blog_detail.min.css" />
+
+  
+
+
+    <!-- 请置于所有广告位代码之前 --> 
+            <script src="http://dup.baidustatic.com/js/ds.js"></script>
+
+</head>
+
+
+<body>
+     
+        <div class="tracking-ad" data-view="true" data-mod="ad_popu_72"  data-mtp="62" data-order="40" data-con="ad_content_2072" >
+                     <script id="popuLayer_js_q" src="http://ads.csdn.net/js/popuLayer.js" defer="defer"  type="text/javascript"></script>
+                <div id="layerd" style="position: fixed;bottom:0px;right:0px;line-height:0px;z-index:1000">
+    	                <div class="J_close layer_close" style="display:;background-color:#efefef;padding:0px;color:#333;font:12px/24px Helvetica,Tahoma,Arial,sans-serif;text-align:right;">关闭</div><!-- 广告占位容器 --><div id="cpro_u2895327"></div></div>
+                <script>  document.getElementById("popuLayer_js_q").onload = function () { var styObjd = styObj = { width: "300px", "height": parseInt(250) + 28 }; window.CSDN.Layer.PopuLayer("#layerd", { storageName: "layerd", styleObj: styObjd, total: 50, expoire: 1000 * 60 }); }</script><!-- 投放代码 --><script type="text/javascript">                    /*服务器频道首页置顶Banner960*90，创建于2014-7-3*/    (window.cproArray = window.cproArray || []).push({ id: "u2895327" });  </script>  <script src="http://cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript"></script>
+     
+        </div>
+
+    <!-- 广告位开始 -->
+        
+    <!-- 广告位结束 -->
+
+    
+   
+      <!--new top-->
+    <script id="toolbar-tpl-scriptId" fixed="true" prod="blog" skin="black" src="http://c.csdnimg.cn/public/common/toolbar/js/html.js" type="text/javascript"></script>
+     <!--new top-->
+    <div id="container">
+        <div id="header">
+    <div class="header">
+        <div id="blog_title">
+            <h2>
+                <a href="http://blog.csdn.net/weewqrer">weewqrer的博客</a></h2>
+            <h3></h3>
+            <div class="clear">
+            </div>
+        </div>
+        <div class="clear">
+        </div>
+        
+     
+    </div>
+</div>
+<div id="navigator">
+    <div class="navigator_bg">
+    </div>
+    <div class="navigator">
+        <ul>           
+                <li id="btnContents"><a href="http://blog.csdn.net/weewqrer?viewmode=contents"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_mulu'])">
+                    <img src="http://static.blog.csdn.net/images/ico_list.gif">目录视图</span></a></li>
+                <li id="btnView"><a href="http://blog.csdn.net/weewqrer?viewmode=list"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_zhaiyao'])">
+                    <img src="http://static.blog.csdn.net/images/ico_summary.gif">摘要视图</span></a></li>
+                <li id="btnRss"><a href="http://blog.csdn.net/weewqrer/rss/list"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_RSS'])">
+                    <img src="http://static.blog.csdn.net/images/ico_rss.gif">订阅</span></a></li>                
+            
+
+            </ul>
+    </div>
+</div>
+<script type="text/javascript">
+    var username = "weewqrer";
+    var _blogger = username;
+    var blog_address = "http://blog.csdn.net/weewqrer";
+    var static_host = "http://static.blog.csdn.net";
+    var currentUserName = "";  
+</script>
+
+        <div id="body">
+            <div id="main">
+                <div class="main">
+                        <div class="ad_class">
+<div class="notice tracking-ad" data-mod='popu_3' > 
+
+
+<a href="http://blog.csdn.net/broadview2006/article/details/75423492">
+<font color=red><strong>评论送书 | 云原生、Docker、Web算法 </strong></font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp
+
+<a href="http://blog.csdn.net/blogdevteam/article/details/74550215">
+<font color=blue><strong>征文 | 你会为 AI 转型么？</strong></font></a>
+&nbsp;&nbsp;&nbsp;&nbsp
+
+
+<a href="http://blog.csdn.net/soledadzz/article/details/75312484">
+<font color=red><strong>福利 | 免费参加 2017 OpenStack Days China</strong></font></a>
+
+
+</div>                        </div>
+
+                        
+
+
+
+  
+
+
+
+
+
+
+<script   type="text/javascript" src="http://static.blog.csdn.net/scripts/category.js"></script>
+
+  <script type="text/ecmascript">
+      window.quickReplyflag = true;
+      var isBole = false; 
+      var fasrc="http://my.csdn.net/my/favorite/miniadd?t=%e7%ba%a2%e9%bb%91%e6%a0%91%ef%bc%88%e9%99%84%e5%ae%8c%e6%95%b4C%e4%bb%a3%e7%a0%81%ef%bc%89&u=http://blog.csdn.net/weewqrer/article/details/51866488"
+    </script>
+<div id="article_details" class="details">
+    <div class="article_title">   
+         <span class="ico ico_type_Original"></span>
+
+    <h1>
+        <span class="link_title"><a href="/weewqrer/article/details/51866488">
+        红黑树（附完整C代码）        
+           
+        </a>
+        </span>
+
+         
+    </h1>
+</div>
+
+   
+
+        <div class="article_manage clearfix">
+        <div class="article_l">
+            <span class="link_categories">
+            标签：
+              <a href='http://www.csdn.net/tag/%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84%e5%92%8c%e7%ae%97%e6%b3%95' target=_blank onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">数据结构和算法</a><a href='http://www.csdn.net/tag/%e7%ba%a2%e9%bb%91%e6%a0%91' target=_blank onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">红黑树</a>
+            </span>
+        </div>
+        <div class="article_r">
+            <span class="link_postdate">2016-07-09 14:06</span>
+            <span class="link_view" title="阅读次数">2805人阅读</span>
+            <span class="link_comments" title="评论次数"> <a href="#comments" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_pinglun'])">评论</a>(0)</span>
+            <span class="link_collect tracking-ad" data-mod="popu_171"> <a href="javascript:void(0);" onclick="javascript:collectArticle('%e7%ba%a2%e9%bb%91%e6%a0%91%ef%bc%88%e9%99%84%e5%ae%8c%e6%95%b4C%e4%bb%a3%e7%a0%81%ef%bc%89','51866488');return false;" title="收藏">收藏</a></span>
+             <span class="link_report"> <a href="#report" onclick="javascript:report(51866488,2);return false;" title="举报">举报</a></span>
+
+        </div>
+    </div>    <style type="text/css">        
+            .embody{
+                padding:10px 10px 10px;
+                margin:0 -20px;
+                border-bottom:solid 1px #ededed;                
+            }
+            .embody_b{
+                margin:0 ;
+                padding:10px 0;
+            }
+            .embody .embody_t,.embody .embody_c{
+                display: inline-block;
+                margin-right:10px;
+            }
+            .embody_t{
+                font-size: 12px;
+                color:#999;
+            }
+            .embody_c{
+                font-size: 12px;
+            }
+            .embody_c img,.embody_c em{
+                display: inline-block;
+                vertical-align: middle;               
+            }
+             .embody_c img{               
+                width:30px;
+                height:30px;
+            }
+            .embody_c em{
+                margin: 0 20px 0 10px;
+                color:#333;
+                font-style: normal;
+            }
+    </style>
+    <script  type="text/javascript">
+        $(function () {
+            try
+            {
+                var lib = eval("("+$("#lib").attr("value")+")");
+                var html = "";
+                if (lib.err == 0) {
+                    $.each(lib.data, function (i) {
+                        var obj = lib.data[i];
+                        //html += '<img src="' + obj.logo + '"/>' + obj.name + "&nbsp;&nbsp;";
+                        html += ' <a href="' + obj.url + '" target="_blank">';
+                        html += ' <img src="' + obj.logo + '">';
+                        html += ' <em><b>' + obj.name + '</b></em>';
+                        html += ' </a>';
+                    });
+                    if (html != "") {
+                        setTimeout(function () {
+                            $("#lib").html(html);                      
+                            $("#embody").show();
+                        }, 100);
+                    }
+                }      
+            } catch (err)
+            { }
+            
+        });
+    </script>
+      <div class="category clearfix">
+        <div class="category_l">
+           <img src="http://static.blog.csdn.net/images/category_icon.jpg">
+            <span>分类：</span>
+        </div>
+        <div class="category_r">
+                    <label  onclick="GetCategoryArticles('5778851','weewqrer','top','51866488');">
+                        <span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_fenlei']);">算法<em>（3）</em></span>
+                      <img class="arrow-down" src="http://static.blog.csdn.net/images/arrow_triangle _down.jpg" style="display:inline;">
+                      <img class="arrow-up" src="http://static.blog.csdn.net/images/arrow_triangle_up.jpg" style="display:none;">
+                        <div class="subItem">
+                            <div class="subItem_t"><a  href="http://blog.csdn.net/weewqrer/article/category/5778851"  target="_blank">作者同类文章</a><i class="J_close">X</i></div>
+                            <ul class="subItem_l" id="top_5778851">                            
+                            </ul>
+                        </div>
+                    </label>                    
+        </div>
+    </div>
+
+  
+
+  
+  
+     
+
+
+<div id="article_content" class="article_content tracking-ad" data-mod=popu_307  data-dsm = "post" >
+        <div class="markdown_views"><p>版权声明：原创不易，转载请注明转自<a href="http://blog.csdn.net/weewqrer/article/details/51866488">weewqrer 红黑树</a></p>
+
+<hr>
+
+
+
+<h2 id="红黑树简介">红黑树简介</h2>
+
+<p>首先红黑树是一棵二叉搜索树，它在每个结点上增加了一个存储位来表示结点的颜色，可以是RED或者BLACK。通过对一条从根节点到NIL叶节点（指空结点或者下面说的哨兵）的简单路径上各个结点在颜色进行约束，红黑树确保没有一条路径会比其他路径长出2倍，因而是近似平衡的。 <br>
+<img src="https://upload.wikimedia.org/wikipedia/commons/6/66/Red-black_tree_example.svg" alt="此处输入图片的描述" title=""></p>
+
+
+
+<h3 id="用途">用途</h3>
+
+<p>红黑树和AVL树一样都对插入时间、删除时间和查找时间提供了最好可能的最坏情况担保。对于查找、插入、删除、最大、最小等动态操作的时间复杂度为O(lgn).常见的用途有以下几种：</p>
+
+<ul>
+<li>STL（标准模板库）中在set map是基于红黑树实现的。</li>
+<li>Java中在TreeMap使用的也是红黑树。</li>
+<li>epoll在内核中的实现，用红黑树管理事件块。</li>
+<li>linux进程调度Completely Fair Scheduler,用红黑树管理进程控制块</li>
+</ul>
+
+
+
+<h3 id="红黑树-vs-avl树">红黑树 VS AVL树</h3>
+
+<p>常见的平衡树有红黑树和AVL平衡树，为什么STL和linux都使用红黑树作为平衡树的实现？大概有以下几个原因：</p>
+
+<ol>
+<li><p>从实现细节上来讲，如果插入一个结点引起了树的不平衡，AVL树和红黑树都最多需要2次旋转操作，即两者都是O(1)；但是在删除node引起树的不平衡时，最坏情况下，AVL需要维护从被删node到root这条路径上所有node的平衡性，因此需要旋转的量级O(logN)，而RB-Tree最多只需3次旋转，只需要O(1)的复杂度</p></li>
+<li><p>从两种平衡树对平衡的要求来讲，AVL的结构相较RB-Tree来说更为平衡，在插入和删除node更容易引起Tree的unbalance，因此在大量数据需要插入或者删除时，AVL需要rebalance的频率会更高。因此，RB-Tree在需要大量插入和删除node的场景下，效率更高。自然，由于AVL高度平衡，因此AVL的search效率更高。</p></li>
+<li><p>总体来说，RB-tree的统计性能是高于AVL的。</p></li>
+</ol>
+
+
+
+<h2 id="关于参考书">关于参考书</h2>
+
+<p>《算法导论》和《数据结构与算法分析》是大家常用的两本算法书，针对红黑树这一章，这两本书上也都有，但是二者从数据结构到使用的方法上都不一样，这里我推荐使用《算法导论》。有以下几个原因：</p>
+
+<ul>
+<li>《数据结构与算法分析》中使用的数据结构没有保存父亲结点，所以在调用旋转函数时需要用函数返回值来保持上下结点的连接，这在avl树中显得很简洁，因为在avl中的情况比较简单，但是在红黑树中涉及到了祖祖父、祖父、父亲、儿子、四代结点，按照这本书上的方法得保存GGP、GP、P、X四个全局变量的值，在更新它们的指向时非常容易搞混。</li>
+<li>《数据结构与算法分析》没有实现删除操作，只是描述了实现的方法，按照这上面的方法我也做了实现，最后发现代码非常长，至少150+，不如《算法导论》中的简洁。</li>
+<li>另外，《算法导论》中描述的方法比较完整，思路严谨。</li>
+</ul>
+
+
+
+<h2 id="红黑树详解">红黑树详解</h2>
+
+
+
+<h3 id="红黑树性质">红黑树性质</h3>
+
+<p>红黑树是每个结点都带有颜色属性的二叉查找树，颜色为红色或黑色。在二叉查找树强制一般要求以外，对于任何有效的红黑树我们增加了如下的额外要求：</p>
+
+<ol>
+<li>列表项结点是红色或黑色。</li>
+<li>根是黑色。</li>
+<li>所有叶子都是黑色（叶子是NIL结点）。</li>
+<li>每个红色结点必须有两个黑色的子结点。（从每个叶子到根的所有路径上不能有两个连续的红色结点。）</li>
+<li>从任一结点到其每个叶子的所有简单路径都包含相同数目的黑色结点。 <br>
+为了便于处理红黑树中的边界情况，使用一个哨兵来代表所有的NIL结点，也就是说所有指向NIL的指针都指向哨兵T.nil。</li>
+</ol>
+
+
+
+<h3 id="红黑树数据结构">红黑树数据结构</h3>
+
+
+
+<pre class="prettyprint"><code class=" hljs objectivec"><span class="hljs-keyword">typedef</span> <span class="hljs-keyword">enum</span> ColorType {RED, BLACK} ColorType;
+<span class="hljs-keyword">typedef</span> <span class="hljs-keyword">struct</span> rbt_t{
+    <span class="hljs-keyword">int</span> key;
+    rbt_t * left;
+    rbt_t * right;
+    rbt_t * p;
+    ColorType color;
+}rbt_t;
+
+<span class="hljs-keyword">typedef</span> <span class="hljs-keyword">struct</span> rbt_root_t{
+    rbt_t* root;
+    rbt_t* <span class="hljs-literal">nil</span>;
+}rbt_root_t;
+
+
+
+<span class="hljs-comment">/*
+*@brief rbt_init 初始化
+*/</span>
+rbt_root_t* rbt_init(<span class="hljs-keyword">void</span>){
+    rbt_root_t* T;
+
+    T = (rbt_root_t*)malloc(<span class="hljs-keyword">sizeof</span>(rbt_root_t));
+    assert( <span class="hljs-literal">NULL</span> != T);
+
+    <span class="hljs-comment">//用一个哨兵代表NIL。</span>
+    T-&gt;<span class="hljs-literal">nil</span> = (rbt_t*)malloc(<span class="hljs-keyword">sizeof</span>(rbt_t));
+    assert(<span class="hljs-literal">NULL</span> != T-&gt;<span class="hljs-literal">nil</span>);
+    T-&gt;<span class="hljs-literal">nil</span>-&gt;color = BLACK;
+    T-&gt;<span class="hljs-literal">nil</span>-&gt;left = T-&gt;<span class="hljs-literal">nil</span>-&gt;right = <span class="hljs-literal">NULL</span>;
+    T-&gt;<span class="hljs-literal">nil</span>-&gt;p = <span class="hljs-literal">NULL</span>;
+
+    T-&gt;root = T-&gt;<span class="hljs-literal">nil</span>;
+    <span class="hljs-keyword">return</span> T;
+}</code></pre>
+
+
+
+<h3 id="红黑树旋转">红黑树旋转</h3>
+
+<p>搜索树操作inert和delete在含有n个关键字的红黑树上，运行花费时间为<span class="MathJax_Preview"></span><span class="MathJax" id="MathJax-Element-1-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-1" style="width: 3.634em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.93em; height: 0px; font-size: 123%;"><span style="position: absolute; clip: rect(1.358em 1000.003em 2.713em -0.431em); top: -2.274em; left: 0.003em;"><span class="mrow" id="MathJax-Span-2"><span class="mi" id="MathJax-Span-3" style="font-family: MathJax_Math-italic;">O</span><span class="mo" id="MathJax-Span-4" style="font-family: MathJax_Main;">(</span><span class="mi" id="MathJax-Span-5" style="font-family: MathJax_Math-italic;">l</span><span class="mi" id="MathJax-Span-6" style="font-family: MathJax_Math-italic;">g<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.003em;"></span></span><span class="mi" id="MathJax-Span-7" style="font-family: MathJax_Math-italic;">n</span><span class="mo" id="MathJax-Span-8" style="font-family: MathJax_Main;">)</span></span><span style="display: inline-block; width: 0px; height: 2.279em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.337em; vertical-align: -0.397em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-1">O(lgn)</script>。由于这两个操作对树做了修改，所以有可能违反上面的性质，所以需要改变树中某些结点的颜色以及指针的结构。</p>
+
+<p>指针结构的修改是通过旋转来完成的，这是一种能保持二叉搜索树性质的局部操作。一种有两种旋转操作，如下图所示，都在O(1)时间内完成。</p>
+
+<p>这里要求x,y都不是T.nil。 <br>
+<img src="http://img.blog.csdn.net/20160709072818923" alt="这里写图片描述" title=""></p>
+
+<p>c代码：</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs lasso"><span class="hljs-comment">/*
+*@brief rbt_left_rotate
+*@param[in] T 树根
+*@param[in] x 要进行旋转的节点
+*/</span>
+<span class="hljs-literal">void</span> rbt_left_rotate( rbt_root_t<span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> x){
+    rbt_t<span class="hljs-subst">*</span> y <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>right;
+
+    x<span class="hljs-subst">-&gt;</span>right <span class="hljs-subst">=</span> y<span class="hljs-subst">-&gt;</span>left;
+    <span class="hljs-keyword">if</span>(x<span class="hljs-subst">-&gt;</span>right <span class="hljs-subst">!=</span> T<span class="hljs-subst">-&gt;</span>nil)<span class="hljs-comment">//更新某结点的父亲时，要确定此结点不是T.nil</span>
+        x<span class="hljs-subst">-&gt;</span>right<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">=</span> x;
+
+    y<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>p;
+    <span class="hljs-keyword">if</span>(x<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">==</span> T<span class="hljs-subst">-&gt;</span>nil){<span class="hljs-comment">//如果x以前是树根，那么现在树根易主了</span>
+        T<span class="hljs-subst">-&gt;</span>root <span class="hljs-subst">=</span> y;
+    }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(y<span class="hljs-subst">-&gt;</span>key <span class="hljs-subst">&lt;</span> y<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>key)
+        y<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>left <span class="hljs-subst">=</span> y;
+    <span class="hljs-keyword">else</span>
+        y<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>right <span class="hljs-subst">=</span> y;
+
+    y<span class="hljs-subst">-&gt;</span>left <span class="hljs-subst">=</span> x;
+    x<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">=</span> y;
+}
+<span class="hljs-comment">/*
+*@brief rbt_right_rotate
+*@param[in] 树根
+*@param[in] 要进行旋转的节点
+*/</span>
+<span class="hljs-literal">void</span> rbt_right_rotate( rbt_root_t<span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> x){
+    rbt_t <span class="hljs-subst">*</span> y <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>left;
+    x<span class="hljs-subst">-&gt;</span>left <span class="hljs-subst">=</span> y<span class="hljs-subst">-&gt;</span>right;
+
+    <span class="hljs-keyword">if</span>(T<span class="hljs-subst">-&gt;</span>nil <span class="hljs-subst">!=</span> x<span class="hljs-subst">-&gt;</span>left)
+        x<span class="hljs-subst">-&gt;</span>left<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">=</span> x;
+
+    y<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>p;
+    <span class="hljs-keyword">if</span>(y<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">==</span> T<span class="hljs-subst">-&gt;</span>nil)
+        T<span class="hljs-subst">-&gt;</span>root <span class="hljs-subst">=</span> y;
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(y<span class="hljs-subst">-&gt;</span>key <span class="hljs-subst">&lt;</span> y<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>key)
+        y<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>left<span class="hljs-subst">=</span> y;
+    <span class="hljs-keyword">else</span>
+        y<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>right <span class="hljs-subst">=</span> y;
+
+    y<span class="hljs-subst">-&gt;</span>right <span class="hljs-subst">=</span> x;
+    x<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">=</span> y;
+}</code></pre>
+
+
+
+<h3 id="红黑树插入">红黑树插入</h3>
+
+<p>在红黑树中插入一个元素，跟在二叉搜索树中插入一个元素一样，只是插入一个元素之后，有可能使得这个树不再平衡，所以要再处理一下，使之重新回到平衡状态。</p>
+
+<p>图中N为新插入的结点，U为它的叔叔。 <br>
+<img src="http://img.blog.csdn.net/20160709085431633" alt="这里写图片描述" title=""> <br>
+插入操作的关键在于以下几点：</p>
+
+<ol>
+<li>新插入的节点一定是红色的。（如果是黑色的，会破坏条件5）</li>
+<li>如果新插入的节点的父亲是黑色的，则没有破坏任何性质，那么插入完成。</li>
+<li>如果插入节点的父节点是红色, 破坏了性质4. 故插入算法就是通过重新着色或旋转, 来维持性质</li>
+</ol>
+
+<p><strong>插入一个红色节点要处理这么几种情况：</strong></p>
+
+<p><strong>此时要记住一件事事情，插入时总是要考虑它的叔叔，删除时总要考虑它的兄弟。而且插入时维护的主要是颜色（性质4），而删除时维护的主要是黑色结点数量（性质5）</strong></p>
+
+<p><strong>情况1：</strong></p>
+
+<p>N为红，P为红（GP一定为黑），U为红。 <br>
+<img src="http://img.blog.csdn.net/20160709085731541" alt="这里写图片描述" title=""> <br>
+下面会说明我们可以通过一种特殊的处理把这种情况避免掉。</p>
+
+<p>那为什么要避免这种情况呢？因为这种情况一般是通过颜色翻转来处理的，也就是把P U换成黑色，把GP抱成红色，但是GP的父亲如果是红色的话又会违反红黑树的性质。</p>
+
+<p><strong>情况2：</strong></p>
+
+<p>N，P都为红（GP一定为黑)，U为黑 <br>
+<img src="http://img.blog.csdn.net/20160709090448014" alt="这里写图片描述" title=""></p>
+
+<p>根据境像，情况2可细分为4种情况，如下： <br>
+<img src="http://img.blog.csdn.net/20160709091932785" alt="这里写图片描述" title=""> <br>
+但是这四种具体情况的处理手法是一样的，都是通过颜色翻转与旋转来处理的。下面我们通过情况2.1和2.2来说明一下处理方法： <br>
+情况2.2通过调用left_rotate(T,p)变成情况2.1; <br>
+情况2.1通过交换GP与P的颜色，然后调用right_rotate(T,GP)，此时不再违反任何性质。</p>
+
+<p>情况2.3和2.4分别是2.1和2.2的境像。</p>
+
+<p><strong>如何避免情况1</strong></p>
+
+<p>令X = T.root,在向下遍历的过程中，我们如果遇到X.right.color == x.left.color == RED时我们将x与它孩子的颜色翻转，即把x涂成红色，把x.right和x.left涂成黑色。</p>
+
+<p>如果x的父亲为黑色，没有违反性质；如果x的父亲为红色，那么可以把x当成新插入的红色结点N，那么只需要处理情况2即可。</p>
+
+<p>至此，插入完成，具体实现可以看<a href="https://www.zybuluo.com/mdeditor#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81c">完整代码</a>部分，代码也有必要的注释。</p>
+
+
+
+<h3 id="红黑树删除">红黑树删除</h3>
+
+<p><img src="http://img.blog.csdn.net/20160709102011839" alt="这里写图片描述" title=""> <br>
+还是上面同样那句话，插入时总是要考虑它的叔叔，删除时总要考虑它的兄弟。而且插入时维护的主要是颜色（性质4），而删除时维护的主要是黑色结点数量（性质5）。</p>
+
+<p>写删除的代码花费了我大概一天多的时间，因为我总是试图找出一种比《数据结构与算法分析》上更清晰，比《算法导论》中更简单的方法，但是失败了(⊙▽⊙).</p>
+
+<p>实际上删除操作也没有那么难，如果要删除 z 结点，那么就让 z 的后继来代替 z 的位置即可。 如果z是红色的，那么操作便完成了，删除一个红色结点没有违反任何性质。但如果z是黑色的，那么我们删除一个黑色结点，便违反了性质5，造成黑色结点数量的左右不平衡。只要分析出删除一个黑色结点会遇到哪些情况即可。</p>
+
+<p>首先找到要删除的结点，我们定义它为 z 。</p>
+
+<p>如果 z 的两个孩子都不是T.nil，那么我们在 z 的右子树中找出最小的结点 m，把 m 结点的值赋给 z （而不是把m移植到z的位置，也就不用考虑颜色问题，这一点是比《算法导论》中要简单的），那么我们要删除的结点就成为 m 了。m 肯定没有左孩子。令 z 重新指向 m .</p>
+
+<p>找到要删除的结点 z 之后，我们用 <strong>z 的孩子(记作 x )</strong>来取代 z的位置（即使z.right == T.nil） 。<code>rbt_transplant(T,z,z.right);</code></p>
+
+<p>此时用到下面一段代码，实现用v代替u</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs lasso"><span class="hljs-literal">void</span> rbt_transplant(rbt_root_t<span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> u, rbt_t<span class="hljs-subst">*</span> v){
+    <span class="hljs-keyword">if</span>(u<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">==</span> T<span class="hljs-subst">-&gt;</span>nil)
+        T<span class="hljs-subst">-&gt;</span>root <span class="hljs-subst">=</span> v;
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(u <span class="hljs-subst">==</span> u<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>left)
+        u<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>left <span class="hljs-subst">=</span>v;
+    <span class="hljs-keyword">else</span>
+        u<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>right <span class="hljs-subst">=</span> v;
+    v<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">=</span> u<span class="hljs-subst">-&gt;</span>p;<span class="hljs-comment">//即使v是T.nil也可以执行这一行</span>
+}</code></pre>
+
+<p>到目前为止，如果要被删除的 z 结点是红色的，那么程序就结束了。但是如果 z 是黑色的，所以删除z之后z这边少了一个黑色结点，会违反性质5，此时分为4种情况（x 是左孩子 和 x 是右孩子分别有4种情况，现在只讨论x是左孩子的情况）：</p>
+
+<p><strong>情况1</strong></p>
+
+<p>x的兄弟w是红色的，那么它们的父亲、w的孩子都是黑色的。</p>
+
+<p>这种情况下只能做一种无损的操作，通过交换颜色再旋转，对树的性质不会产生影响，所以从根到x结点的路径上少的一个黑色结点也不会补上。</p>
+
+<p>交换p与w的颜色，再对p进行左旋操之后，x的新兄弟就为黑色，情况变成了2 3 4中的一种. <br>
+<img src="http://img.blog.csdn.net/20160709103229551" alt="这里写图片描述" title=""> <br>
+图中x为白色，表示我们不关心x的颜色。</p>
+
+<p><strong>情况2</strong></p>
+
+<p>x的兄弟w是黑色，而且w的两个孩子都是黑色。</p>
+
+<p>此时可以细分为2种情况，但无论哪种情况，我们要进行的操作都是一样的，都是将w涂成红色，将p涂成黑色。</p>
+
+<p>如果是情况2.1(有可能由情况1发展过来的)，由于上述操作为x那边补上了一个黑色（从根到x在路径上多了一个黑色结点），此时红黑树性质5得到满足，程序结束。</p>
+
+<p>如果是情况2.2, 经过上述操作后，P的右子树也少了一个黑色结点，令P作为新的X继续循环。 <br>
+<img src="http://img.blog.csdn.net/20160709104727016" alt="这里写图片描述" title=""></p>
+
+<p><strong>情况3</strong></p>
+
+<p>W是黑色有，w在左孩子是红色的，W的右孩子是黑色的。</p>
+
+<p>通过交换L与W的颜色，再对W进行右旋操作。这种操作也不会对红黑树性质产生影响，此时进入情况4，我们会看到通过情况4中的操作最终使红黑树性质得到满足，结束程序。</p>
+
+<p>图中最后边的R结点没有画出来，因为我们不关心它了 <br>
+<img src="http://img.blog.csdn.net/20160709111556961" alt="这里写图片描述" title=""></p>
+
+<p><strong>情况4</strong></p>
+
+<p>w是黑色的，w的右孩子是红色的。</p>
+
+<p>把w涂成p的颜色，把P涂成黑色，R涂成黑色，左旋P。此时从根到x在路径上多了一个黑色结点，程序结束。 <br>
+<img src="http://img.blog.csdn.net/20160709112746091" alt="这里写图片描述" title=""></p>
+
+<p>具体实现代码见下面。</p>
+
+
+
+<h2 id="完整代码c">完整代码（C）</h2>
+
+
+
+<pre class="prettyprint"><code class=" hljs lasso"><span class="hljs-variable">#include</span><span class="hljs-subst">&lt;</span>stdafx<span class="hljs-built_in">.</span>h<span class="hljs-subst">&gt;</span>
+<span class="hljs-variable">#include</span><span class="hljs-subst">&lt;</span>malloc<span class="hljs-built_in">.</span>h<span class="hljs-subst">&gt;</span>
+<span class="hljs-variable">#include</span> <span class="hljs-subst">&lt;</span>assert<span class="hljs-built_in">.</span>h<span class="hljs-subst">&gt;</span>
+
+<span class="hljs-comment">//版权声明：原创不易，转载请注明转自[weewqrer 红黑树](http://blog.csdn.net/weewqrer/article/details/51866488)</span>
+
+<span class="hljs-comment">//红黑树</span>
+typedef enum ColorType {RED, BLACK} ColorType;
+typedef struct rbt_t{
+    int key;
+    rbt_t <span class="hljs-subst">*</span> left;
+    rbt_t <span class="hljs-subst">*</span> right;
+    rbt_t <span class="hljs-subst">*</span> p;
+    ColorType color;
+}rbt_t;
+
+typedef struct rbt_root_t{
+    rbt_t<span class="hljs-subst">*</span> root;
+    rbt_t<span class="hljs-subst">*</span> nil;
+}rbt_root_t;
+
+<span class="hljs-comment">//函数声明</span>
+rbt_root_t<span class="hljs-subst">*</span> rbt_init(<span class="hljs-literal">void</span>);
+static <span class="hljs-literal">void</span> rbt_handleReorient(rbt_root_t<span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> x, int k);
+rbt_root_t<span class="hljs-subst">*</span> rbt_insert(rbt_root_t<span class="hljs-subst">*</span> <span class="hljs-subst">&amp;</span>T, int k);
+rbt_root_t<span class="hljs-subst">*</span> rbt_delete(rbt_root_t<span class="hljs-subst">*</span> <span class="hljs-subst">&amp;</span>T, int k);
+
+<span class="hljs-literal">void</span> rbt_transplant(rbt_root_t<span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> u, rbt_t<span class="hljs-subst">*</span> v);
+
+static <span class="hljs-literal">void</span> rbt_left_rotate( rbt_root_t<span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> x);
+static <span class="hljs-literal">void</span> rbt_right_rotate( rbt_root_t<span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> x);
+
+<span class="hljs-literal">void</span> rbt_inPrint(const rbt_root_t<span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> t);
+<span class="hljs-literal">void</span> rbt_prePrint(const rbt_t <span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> t);
+<span class="hljs-literal">void</span> rbt_print(const rbt_root_t<span class="hljs-subst">*</span> T);
+
+static rbt_t<span class="hljs-subst">*</span> rbt_findMin(rbt_root_t <span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> t);
+static rbt_t<span class="hljs-subst">*</span> rbt_findMax(rbt_root_t <span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> t);
+
+static rbt_t<span class="hljs-subst">*</span> rbt_findMin(rbt_root_t <span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> t){
+    <span class="hljs-keyword">if</span>(t <span class="hljs-subst">==</span> T<span class="hljs-subst">-&gt;</span>nil) <span class="hljs-keyword">return</span> T<span class="hljs-subst">-&gt;</span>nil;
+
+    <span class="hljs-keyword">while</span>(t<span class="hljs-subst">-&gt;</span>left <span class="hljs-subst">!=</span> T<span class="hljs-subst">-&gt;</span>nil)
+        t <span class="hljs-subst">=</span> t<span class="hljs-subst">-&gt;</span>left;
+    <span class="hljs-keyword">return</span> t;
+}
+static rbt_t<span class="hljs-subst">*</span> rbt_findMax(rbt_root_t <span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> t){
+    <span class="hljs-keyword">if</span>(t <span class="hljs-subst">==</span> T<span class="hljs-subst">-&gt;</span>nil) <span class="hljs-keyword">return</span> T<span class="hljs-subst">-&gt;</span>nil;
+
+    <span class="hljs-keyword">while</span>(t<span class="hljs-subst">-&gt;</span>right <span class="hljs-subst">!=</span> T<span class="hljs-subst">-&gt;</span>nil)
+        t <span class="hljs-subst">=</span> t<span class="hljs-subst">-&gt;</span>right;
+    <span class="hljs-keyword">return</span> t;
+}
+<span class="hljs-comment">/*
+*@brief rbt_init 初始化
+*/</span>
+rbt_root_t<span class="hljs-subst">*</span> rbt_init(<span class="hljs-literal">void</span>){
+    rbt_root_t<span class="hljs-subst">*</span> T;
+
+    T <span class="hljs-subst">=</span> (rbt_root_t<span class="hljs-subst">*</span>)malloc(sizeof(rbt_root_t));
+    assert( <span class="hljs-built_in">NULL</span> <span class="hljs-subst">!=</span> T);
+
+    T<span class="hljs-subst">-&gt;</span>nil <span class="hljs-subst">=</span> (rbt_t<span class="hljs-subst">*</span>)malloc(sizeof(rbt_t));
+    assert(<span class="hljs-built_in">NULL</span> <span class="hljs-subst">!=</span> T<span class="hljs-subst">-&gt;</span>nil);
+    T<span class="hljs-subst">-&gt;</span>nil<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> BLACK;
+    T<span class="hljs-subst">-&gt;</span>nil<span class="hljs-subst">-&gt;</span>left <span class="hljs-subst">=</span> T<span class="hljs-subst">-&gt;</span>nil<span class="hljs-subst">-&gt;</span>right <span class="hljs-subst">=</span> <span class="hljs-built_in">NULL</span>;
+    T<span class="hljs-subst">-&gt;</span>nil<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">=</span> <span class="hljs-built_in">NULL</span>;
+
+    T<span class="hljs-subst">-&gt;</span>root <span class="hljs-subst">=</span> T<span class="hljs-subst">-&gt;</span>nil;
+
+    <span class="hljs-keyword">return</span> T;
+}
+
+<span class="hljs-comment">/*
+*@brief rbt_handleReorient  内部函数 由rbt_insert调用
+*      在两种情况下调用这个函数：
+* 1 x有连个红色儿子
+* 2 x为新插入的结点
+*
+*/</span> 
+<span class="hljs-literal">void</span> rbt_handleReorient(rbt_root_t<span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> x, int k){
+
+    <span class="hljs-comment">//在第一种情况下，进行颜色翻转； 在第二种情况下，相当于对新插入的x点初始化</span>
+    x<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> RED;
+    x<span class="hljs-subst">-&gt;</span>left<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>right<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> BLACK;
+
+    <span class="hljs-comment">//如果x.p为红色，那么x.p一定不是根，x.p.p一定不是T.nil，而且为黑色</span>
+    <span class="hljs-keyword">if</span>(  RED <span class="hljs-subst">==</span> x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>color){
+        x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> RED;<span class="hljs-comment">//此时x, p, x.p.p都为红</span>
+
+        <span class="hljs-keyword">if</span>(x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>key <span class="hljs-subst">&lt;</span> x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>key){
+            <span class="hljs-keyword">if</span>(k <span class="hljs-subst">&gt;</span> x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>key){
+                x<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> BLACK;<span class="hljs-comment">//小心地处理颜色</span>
+                rbt_left_rotate(T,x<span class="hljs-subst">-&gt;</span>p);
+                rbt_right_rotate(T,x<span class="hljs-subst">-&gt;</span>p);
+            }<span class="hljs-keyword">else</span>{
+                x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> BLACK;<span class="hljs-comment">//小心地处理颜色</span>
+                rbt_right_rotate(T,x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>p);
+            }
+
+        }<span class="hljs-keyword">else</span>{
+            <span class="hljs-keyword">if</span>(k <span class="hljs-subst">&lt;</span> x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>key){
+                x<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> BLACK;
+                rbt_right_rotate(T,x<span class="hljs-subst">-&gt;</span>p);
+                rbt_left_rotate(T,x<span class="hljs-subst">-&gt;</span>p);
+            }<span class="hljs-keyword">else</span>{
+                x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> BLACK;
+                rbt_left_rotate(T,x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>p);
+            }
+
+        }
+    }
+
+    T<span class="hljs-subst">-&gt;</span>root<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> BLACK;<span class="hljs-comment">//无条件令根为黑色</span>
+}
+<span class="hljs-comment">/*
+*@brief brt_insert 插入
+*1 新插入的结点一定是红色的，如果是黑色的，会破坏条件4（每个结点到null叶结点的每条路径有同样数目的黑色结点）
+*2 如果新插入的结点的父亲是黑色的，那么插入完成。 如果父亲是红色的，那么做一个旋转即可。（前提是叔叔是黑色的）
+*3 我们这个插入要保证其叔叔是黑色的。也就是在x下沉过程中，不允许存在两个红色结点肩并肩。
+*/</span>
+rbt_root_t<span class="hljs-subst">*</span> rbt_insert(rbt_root_t<span class="hljs-subst">*</span> <span class="hljs-subst">&amp;</span>T, int k){
+
+    rbt_t <span class="hljs-subst">*</span> x, <span class="hljs-subst">*</span>p;
+    x <span class="hljs-subst">=</span> T<span class="hljs-subst">-&gt;</span>root;
+    p <span class="hljs-subst">=</span> x;
+
+    <span class="hljs-comment">//令x下沉到叶子上，而且保证一路上不会有同时为红色的兄弟</span>
+    <span class="hljs-keyword">while</span>( x <span class="hljs-subst">!=</span> T<span class="hljs-subst">-&gt;</span>nil){        
+        <span class="hljs-comment">//</span>
+        <span class="hljs-comment">//保证没有一对兄弟同时为红色， 为什么要这么做？</span>
+        <span class="hljs-keyword">if</span>(x <span class="hljs-subst">!=</span> T<span class="hljs-subst">-&gt;</span>nil)         
+            <span class="hljs-keyword">if</span>(x<span class="hljs-subst">-&gt;</span>left<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">==</span> RED <span class="hljs-subst">&amp;&amp;</span> x<span class="hljs-subst">-&gt;</span>right<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">==</span> RED)
+                rbt_handleReorient(T,x,k);
+
+        p <span class="hljs-subst">=</span> x;
+        <span class="hljs-keyword">if</span>(k<span class="hljs-subst">&lt;</span>x<span class="hljs-subst">-&gt;</span>key)
+            x <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>left;
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(k<span class="hljs-subst">&gt;</span>x<span class="hljs-subst">-&gt;</span>key)
+            x <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>right;
+        <span class="hljs-keyword">else</span>{
+            printf(<span class="hljs-string">"\n%d已存在\n"</span>,k);
+            <span class="hljs-keyword">return</span> T;
+        }
+
+    }
+
+    <span class="hljs-comment">//为x分配空间，并对其进行初始化</span>
+    x <span class="hljs-subst">=</span> (rbt_t <span class="hljs-subst">*</span>)malloc(sizeof(rbt_t));
+    assert(<span class="hljs-built_in">NULL</span> <span class="hljs-subst">!=</span> x);
+    x<span class="hljs-subst">-&gt;</span>key <span class="hljs-subst">=</span> k;
+    x<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> RED;
+    x<span class="hljs-subst">-&gt;</span>left <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>right <span class="hljs-subst">=</span> T<span class="hljs-subst">-&gt;</span>nil;
+    x<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">=</span> p;
+
+    <span class="hljs-comment">//让x的父亲指向x</span>
+    <span class="hljs-keyword">if</span>(T<span class="hljs-subst">-&gt;</span>root <span class="hljs-subst">==</span> T<span class="hljs-subst">-&gt;</span>nil)
+        T<span class="hljs-subst">-&gt;</span>root <span class="hljs-subst">=</span> x;        
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(k <span class="hljs-subst">&lt;</span> p<span class="hljs-subst">-&gt;</span>key)
+        p<span class="hljs-subst">-&gt;</span>left <span class="hljs-subst">=</span> x;
+    <span class="hljs-keyword">else</span>
+        p<span class="hljs-subst">-&gt;</span>right <span class="hljs-subst">=</span> x;
+
+    <span class="hljs-comment">//因为一路下来，如果x的父亲是红色，那么x的叔叔肯定不是红色了，这个时候只需要做一下翻转即可。</span>
+    rbt_handleReorient(T,x,k);
+
+    <span class="hljs-keyword">return</span> T;
+}
+<span class="hljs-literal">void</span> rbt_transplant(rbt_root_t<span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> u, rbt_t<span class="hljs-subst">*</span> v){
+    <span class="hljs-keyword">if</span>(u<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">==</span> T<span class="hljs-subst">-&gt;</span>nil)
+        T<span class="hljs-subst">-&gt;</span>root <span class="hljs-subst">=</span> v;
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(u <span class="hljs-subst">==</span> u<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>left)
+        u<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>left <span class="hljs-subst">=</span>v;
+    <span class="hljs-keyword">else</span>
+        u<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>right <span class="hljs-subst">=</span> v;
+    v<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">=</span> u<span class="hljs-subst">-&gt;</span>p;
+}
+<span class="hljs-comment">/*
+*@brief rbt_delete 从树中删除 k
+*
+*
+*/</span>
+rbt_root_t<span class="hljs-subst">*</span> rbt_delete(rbt_root_t<span class="hljs-subst">*</span> <span class="hljs-subst">&amp;</span>T, int k){
+    assert(T <span class="hljs-subst">!=</span> <span class="hljs-built_in">NULL</span>);
+    <span class="hljs-keyword">if</span>(<span class="hljs-built_in">NULL</span> <span class="hljs-subst">==</span> T<span class="hljs-subst">-&gt;</span>root) <span class="hljs-keyword">return</span> T;
+
+    <span class="hljs-comment">//找到要被删除的叶子结点</span>
+    rbt_t <span class="hljs-subst">*</span> toDelete <span class="hljs-subst">=</span> T<span class="hljs-subst">-&gt;</span>root; 
+    rbt_t <span class="hljs-subst">*</span> x;
+
+    <span class="hljs-comment">//找到值为k的结点</span>
+    <span class="hljs-keyword">while</span>(toDelete <span class="hljs-subst">!=</span> T<span class="hljs-subst">-&gt;</span>nil <span class="hljs-subst">&amp;&amp;</span> toDelete<span class="hljs-subst">-&gt;</span>key <span class="hljs-subst">!=</span> k){
+        <span class="hljs-keyword">if</span>(k<span class="hljs-subst">&lt;</span>toDelete<span class="hljs-subst">-&gt;</span>key)
+            toDelete <span class="hljs-subst">=</span> toDelete<span class="hljs-subst">-&gt;</span>left;
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(k<span class="hljs-subst">&gt;</span>toDelete<span class="hljs-subst">-&gt;</span>key)
+            toDelete <span class="hljs-subst">=</span> toDelete<span class="hljs-subst">-&gt;</span>right;
+    }
+
+    <span class="hljs-keyword">if</span>(toDelete <span class="hljs-subst">==</span> T<span class="hljs-subst">-&gt;</span>nil){
+        printf(<span class="hljs-string">"\n%d 不存在\n"</span>,k);
+        <span class="hljs-keyword">return</span> T;
+    }
+
+
+    <span class="hljs-comment">//如果两个孩子，就找到右子树中最小的代替, alternative最多有一个右孩子</span>
+    <span class="hljs-keyword">if</span>(toDelete<span class="hljs-subst">-&gt;</span>left <span class="hljs-subst">!=</span> T<span class="hljs-subst">-&gt;</span>nil <span class="hljs-subst">&amp;&amp;</span> toDelete<span class="hljs-subst">-&gt;</span>right <span class="hljs-subst">!=</span> T<span class="hljs-subst">-&gt;</span>nil){
+        rbt_t<span class="hljs-subst">*</span> alternative <span class="hljs-subst">=</span> rbt_findMin(T, toDelete<span class="hljs-subst">-&gt;</span>right);
+        k <span class="hljs-subst">=</span> toDelete<span class="hljs-subst">-&gt;</span>key <span class="hljs-subst">=</span> alternative<span class="hljs-subst">-&gt;</span>key;
+        toDelete <span class="hljs-subst">=</span> alternative;
+    }
+
+    <span class="hljs-keyword">if</span>(toDelete<span class="hljs-subst">-&gt;</span>left <span class="hljs-subst">==</span> T<span class="hljs-subst">-&gt;</span>nil){
+        x <span class="hljs-subst">=</span> toDelete<span class="hljs-subst">-&gt;</span>right;
+        rbt_transplant(T,toDelete,toDelete<span class="hljs-subst">-&gt;</span>right);
+    }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(toDelete<span class="hljs-subst">-&gt;</span>right <span class="hljs-subst">==</span> T<span class="hljs-subst">-&gt;</span>nil){
+        x <span class="hljs-subst">=</span> toDelete<span class="hljs-subst">-&gt;</span>left;
+        rbt_transplant(T,toDelete,toDelete<span class="hljs-subst">-&gt;</span>left);
+    }
+
+
+
+    <span class="hljs-keyword">if</span>(toDelete<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">==</span> BLACK){
+        <span class="hljs-comment">//x不是todelete，而是用于代替x的那个</span>
+        <span class="hljs-comment">//如果x颜色为红色的，把x涂成黑色即可， 否则 从根到x处少了一个黑色结点，导致不平衡</span>
+        <span class="hljs-keyword">while</span>(x <span class="hljs-subst">!=</span> T<span class="hljs-subst">-&gt;</span>root <span class="hljs-subst">&amp;&amp;</span> x<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">==</span> BLACK){
+            <span class="hljs-keyword">if</span>(x <span class="hljs-subst">==</span> x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>left){
+                rbt_t<span class="hljs-subst">*</span> w <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>right;
+
+                <span class="hljs-comment">//情况1 x的兄弟是红色的，通过</span>
+                <span class="hljs-keyword">if</span>(RED <span class="hljs-subst">==</span> w<span class="hljs-subst">-&gt;</span>color){
+                    w<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> BLACK;
+                    w<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> RED;
+                    rbt_left_rotate(T,x<span class="hljs-subst">-&gt;</span>p);
+                    w <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>right;
+                }<span class="hljs-comment">//处理完情况1之后，w.color== BLACK ， 情况就变成2 3 4 了</span>
+
+                <span class="hljs-comment">//情况2 x的兄弟是黑色的，并且其儿子都是黑色的。</span>
+                <span class="hljs-keyword">if</span>(w<span class="hljs-subst">-&gt;</span>left<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">==</span> BLACK <span class="hljs-subst">&amp;&amp;</span> w<span class="hljs-subst">-&gt;</span>right<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">==</span> BLACK){
+                    <span class="hljs-keyword">if</span>(x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">==</span> RED){
+                        x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> BLACK;
+                        w<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> RED;
+
+                        break;
+                    }<span class="hljs-keyword">else</span>{
+                        w<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> RED;
+                        x <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>p;<span class="hljs-comment">//x.p左右是平衡的，但是x.p处少了一个黑结点，所以把x.p作为新的x继续循环</span>
+                        continue;
+                    }
+                }
+
+                <span class="hljs-comment">//情况3 w为黑色的，左孩子为红色。（走到这一步，说明w左右不同时为黑色。）</span>
+                <span class="hljs-keyword">if</span>(w<span class="hljs-subst">-&gt;</span>right<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">==</span> BLACK){
+                    w<span class="hljs-subst">-&gt;</span>left<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> BLACK;
+                    w<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> RED;
+                    rbt_right_rotate(T,w);
+                    w <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>right;
+                }<span class="hljs-comment">//处理完之后，变成情况4</span>
+
+                <span class="hljs-comment">//情况4 走到这一步说明w为黑色， w的左孩子为黑色， 右孩子为红色。</span>
+
+                w<span class="hljs-subst">-&gt;</span>color<span class="hljs-subst">=</span>x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>color;
+                x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>color<span class="hljs-subst">=</span>BLACK;
+                w<span class="hljs-subst">-&gt;</span>right<span class="hljs-subst">-&gt;</span>color<span class="hljs-subst">=</span>BLACK;
+                rbt_left_rotate(T,x<span class="hljs-subst">-&gt;</span>p);
+                x <span class="hljs-subst">=</span> T<span class="hljs-subst">-&gt;</span>root;
+            }<span class="hljs-keyword">else</span>{
+                rbt_t<span class="hljs-subst">*</span> w <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>left;
+                <span class="hljs-comment">//1</span>
+                <span class="hljs-keyword">if</span>(w<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">==</span> RED){
+                    w<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> BLACK;
+                    x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> RED;
+                    rbt_right_rotate(T,x<span class="hljs-subst">-&gt;</span>p);
+                    w <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>left;
+                }
+                <span class="hljs-comment">//2</span>
+                <span class="hljs-keyword">if</span>(w<span class="hljs-subst">-&gt;</span>left<span class="hljs-subst">-&gt;</span>color<span class="hljs-subst">==</span>BLACK <span class="hljs-subst">&amp;&amp;</span> w<span class="hljs-subst">-&gt;</span>right<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">==</span> BLACK){
+                    <span class="hljs-keyword">if</span>(x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">==</span> RED){
+                        x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> BLACK;
+                        w<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> RED;
+                        break;
+                    }<span class="hljs-keyword">else</span>{
+                        x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> BLACK;
+                        w<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> RED;
+                        x <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>p;
+                        continue;
+                    }
+                }
+
+                <span class="hljs-comment">//3</span>
+                <span class="hljs-keyword">if</span>(w<span class="hljs-subst">-&gt;</span>left<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">==</span> BLACK){
+                    w<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> RED;
+                    w<span class="hljs-subst">-&gt;</span>right<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> BLACK;
+                    w <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>left;
+                }
+
+                <span class="hljs-comment">//4</span>
+                w<span class="hljs-subst">-&gt;</span>color<span class="hljs-subst">=</span>w<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>color;
+                x<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> BLACK;
+                w<span class="hljs-subst">-&gt;</span>left<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> BLACK;
+                rbt_right_rotate(T,x<span class="hljs-subst">-&gt;</span>p);
+                x <span class="hljs-subst">=</span> T<span class="hljs-subst">-&gt;</span>root;
+            }
+
+
+        }
+        x<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">=</span> BLACK;
+    }
+
+
+    <span class="hljs-comment">//放心删除todelete 吧</span>
+    free(toDelete);
+
+    <span class="hljs-keyword">return</span> T;
+}
+
+
+<span class="hljs-comment">/*
+*@brief rbt_left_rotate
+*@param[in] T 树根
+*@param[in] x 要进行旋转的结点
+*/</span>
+<span class="hljs-literal">void</span> rbt_left_rotate( rbt_root_t<span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> x){
+    rbt_t<span class="hljs-subst">*</span> y <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>right;
+
+    x<span class="hljs-subst">-&gt;</span>right <span class="hljs-subst">=</span> y<span class="hljs-subst">-&gt;</span>left;
+    <span class="hljs-keyword">if</span>(x<span class="hljs-subst">-&gt;</span>right <span class="hljs-subst">!=</span> T<span class="hljs-subst">-&gt;</span>nil)
+        x<span class="hljs-subst">-&gt;</span>right<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">=</span> x;
+
+
+
+    y<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>p;
+    <span class="hljs-keyword">if</span>(y<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">==</span> T<span class="hljs-subst">-&gt;</span>nil){
+        T<span class="hljs-subst">-&gt;</span>root <span class="hljs-subst">=</span> y;
+    }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(y<span class="hljs-subst">-&gt;</span>key <span class="hljs-subst">&lt;</span> y<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>key)
+        y<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>left <span class="hljs-subst">=</span> y;
+    <span class="hljs-keyword">else</span>
+        y<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>right <span class="hljs-subst">=</span> y;
+
+    y<span class="hljs-subst">-&gt;</span>left <span class="hljs-subst">=</span> x;
+    x<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">=</span> y;
+}
+<span class="hljs-comment">/*
+*@brief rbt_right_rotate
+*@param[in] 树根
+*@param[in] 要进行旋转的结点
+*/</span>
+<span class="hljs-literal">void</span> rbt_right_rotate( rbt_root_t<span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> x){
+    rbt_t <span class="hljs-subst">*</span> y <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>left;
+    x<span class="hljs-subst">-&gt;</span>left <span class="hljs-subst">=</span> y<span class="hljs-subst">-&gt;</span>right;
+
+    <span class="hljs-keyword">if</span>(T<span class="hljs-subst">-&gt;</span>nil <span class="hljs-subst">!=</span> x<span class="hljs-subst">-&gt;</span>left)
+        x<span class="hljs-subst">-&gt;</span>left<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">=</span> x;
+
+
+
+    y<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">=</span> x<span class="hljs-subst">-&gt;</span>p;
+    <span class="hljs-keyword">if</span>(y<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">==</span> T<span class="hljs-subst">-&gt;</span>nil)
+        T<span class="hljs-subst">-&gt;</span>root <span class="hljs-subst">=</span> y;
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(y<span class="hljs-subst">-&gt;</span>key <span class="hljs-subst">&lt;</span> y<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>key)
+        y<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>left<span class="hljs-subst">=</span> y;
+    <span class="hljs-keyword">else</span>
+        y<span class="hljs-subst">-&gt;</span>p<span class="hljs-subst">-&gt;</span>right <span class="hljs-subst">=</span> y;
+
+    y<span class="hljs-subst">-&gt;</span>right <span class="hljs-subst">=</span> x;
+    x<span class="hljs-subst">-&gt;</span>p <span class="hljs-subst">=</span> y;
+}
+<span class="hljs-literal">void</span> rbt_prePrint(const rbt_root_t<span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> t){
+    <span class="hljs-keyword">if</span>(T<span class="hljs-subst">-&gt;</span>nil <span class="hljs-subst">==</span> t)<span class="hljs-keyword">return</span> ;
+    <span class="hljs-keyword">if</span>(t<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">==</span> RED)
+        printf(<span class="hljs-string">"%3dR"</span>,t<span class="hljs-subst">-&gt;</span>key);
+    <span class="hljs-keyword">else</span>
+        printf(<span class="hljs-string">"%3dB"</span>,t<span class="hljs-subst">-&gt;</span>key);
+    rbt_prePrint(T,t<span class="hljs-subst">-&gt;</span>left);
+    rbt_prePrint(T,t<span class="hljs-subst">-&gt;</span>right);
+}
+<span class="hljs-literal">void</span> rbt_inPrint(const rbt_root_t<span class="hljs-subst">*</span> T, rbt_t<span class="hljs-subst">*</span> t){
+    <span class="hljs-keyword">if</span>(T<span class="hljs-subst">-&gt;</span>nil <span class="hljs-subst">==</span> t)<span class="hljs-keyword">return</span> ;
+    rbt_inPrint(T,t<span class="hljs-subst">-&gt;</span>left);
+    <span class="hljs-keyword">if</span>(t<span class="hljs-subst">-&gt;</span>color <span class="hljs-subst">==</span> RED)
+        printf(<span class="hljs-string">"%3dR"</span>,t<span class="hljs-subst">-&gt;</span>key);
+    <span class="hljs-keyword">else</span>
+        printf(<span class="hljs-string">"%3dB"</span>,t<span class="hljs-subst">-&gt;</span>key);
+    rbt_inPrint(T,t<span class="hljs-subst">-&gt;</span>right);
+}
+
+<span class="hljs-comment">//打印程序包括前序遍历和中序遍历两个，因为它俩可以唯一确定一棵二叉树</span>
+<span class="hljs-literal">void</span> rbt_print(const rbt_root_t<span class="hljs-subst">*</span> T){
+    assert(T<span class="hljs-subst">!=</span><span class="hljs-built_in">NULL</span>);
+    printf(<span class="hljs-string">"\n前序遍历 ："</span>);
+    rbt_prePrint(T,T<span class="hljs-subst">-&gt;</span>root);
+    printf(<span class="hljs-string">"\n中序遍历 ："</span>);
+    rbt_inPrint(T,T<span class="hljs-subst">-&gt;</span>root);
+    printf(<span class="hljs-string">"\n"</span>);
+}
+
+<span class="hljs-literal">void</span> rbt_test(){
+    rbt_root_t<span class="hljs-subst">*</span> T <span class="hljs-subst">=</span> rbt_init();
+
+    <span class="hljs-comment">/************************************************************************/</span>
+    <span class="hljs-comment">/* 1    测试插入
+    /*
+    /*
+    /*输出  前序遍历 ：  7B  2R  1B  5B  4R 11R  8B 14B 15R
+    /*      中序遍历 ：  1B  2R  4R  5B  7B  8B 11R 14B 15R
+    /************************************************************************/</span>
+
+    T <span class="hljs-subst">=</span> rbt_insert(T,<span class="hljs-number">11</span>);
+    T <span class="hljs-subst">=</span> rbt_insert(T,<span class="hljs-number">7</span>);
+    T <span class="hljs-subst">=</span> rbt_insert(T,<span class="hljs-number">1</span>);
+    T <span class="hljs-subst">=</span> rbt_insert(T,<span class="hljs-number">2</span>);
+    T <span class="hljs-subst">=</span> rbt_insert(T,<span class="hljs-number">8</span>);
+    T <span class="hljs-subst">=</span> rbt_insert(T,<span class="hljs-number">14</span>);
+    T <span class="hljs-subst">=</span> rbt_insert(T,<span class="hljs-number">15</span>);
+    T <span class="hljs-subst">=</span> rbt_insert(T,<span class="hljs-number">5</span>);
+    T <span class="hljs-subst">=</span> rbt_insert(T,<span class="hljs-number">4</span>); 
+
+    T <span class="hljs-subst">=</span> rbt_insert(T,<span class="hljs-number">4</span>); <span class="hljs-comment">//重复插入测试</span>
+    rbt_print(T);
+
+    <span class="hljs-comment">/************************************************************************/</span>
+    <span class="hljs-comment">/* 2    测试删除
+    /*    
+    /*操作  连续删除4个元素 rbt_delete(T,8);rbt_delete(T,14);rbt_delete(T,7);rbt_delete(T,11);
+    /*输出  前序遍历 ：  2B  1B  5R  4B 15B
+    /*      中序遍历 ：  1B  2B  4B  5R 15B
+    /************************************************************************/</span>
+
+    rbt_delete(T,<span class="hljs-number">8</span>);
+    rbt_delete(T,<span class="hljs-number">14</span>);rbt_delete(T,<span class="hljs-number">7</span>);rbt_delete(T,<span class="hljs-number">11</span>);
+
+    rbt_delete(T,<span class="hljs-number">8</span>);<span class="hljs-comment">//删除不存在的元素</span>
+    rbt_print(T);
+
+}
+
+</code></pre>
+
+<p>代码只做了少量的测试，如果有BUG请不吝指出。</p>
+
+<p>版权声明：原创不易，转载请注明转自<a href="http://blog.csdn.net/weewqrer/article/details/51866488">weewqrer 红黑树</a></p></div>
+        <script  type="text/javascript">
+            $(function () {
+                $('pre.prettyprint code').each(function () {
+                    var lines = $(this).text().split('\n').length;
+                    var $numbering = $('<ul/>').addClass('pre-numbering').hide();
+                    $(this).addClass('has-numbering').parent().append($numbering);
+                    for (i = 1; i <= lines; i++) {
+                        $numbering.append($('<li/>').text(i));
+                    };
+                    $numbering.fadeIn(1700);
+                });
+            });
+        </script>
+   
+</div>
+
+
+
+
+<!-- Baidu Button BEGIN -->
+
+
+
+
+<div class="bdsharebuttonbox tracking-ad" style="float: right;" data-mod="popu_172">
+<a href="#" class="bds_more" data-cmd="more" style="background-position:0 0 !important; background-image: url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=d754dcc0.png) !important"></a>
+<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"  style="background-position:0 -52px !important"></a>
+<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"style="background-position:0 -104px !important"></a>
+<a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"style="background-position:0 -260px !important"></a>
+<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"style="background-position:0 -208px !important"></a>
+<a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"style="background-position:0 -1612px !important" ></a>
+</div>
+<script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "16" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+<!-- Baidu Button END -->
+
+   
+
+<!--172.16.140.14-->
+
+<!-- Baidu Button BEGIN -->
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=1536434" ></script>
+<script type="text/javascript" id="bdshell_js"></script>
+<script type="text/javascript">
+    document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+</script>
+<!-- Baidu Button END -->
+
+
+
+ 
+
+
+        <div id="digg" ArticleId="51866488" >
+            <dl id="btnDigg" class="digg digg_disable"  onclick="btndigga();">
+               
+                 <dt>顶</dt>
+                <dd>0</dd>
+            </dl>
+           
+              
+            <dl id="btnBury" class="digg digg_disable"  onclick="btnburya();">
+              
+                  <dt>踩</dt>
+                <dd>0</dd>               
+            </dl>
+            
+        </div>
+     <div class="tracking-ad" data-mod="popu_222"><a href="javascript:void(0);" >&nbsp;</a>   </div>
+    <div class="tracking-ad" data-mod="popu_223"> <a href="javascript:void(0);" >&nbsp;</a></div>
+    <script type="text/javascript">
+                function btndigga() {
+                    $(".tracking-ad[data-mod='popu_222'] a").click();
+                }
+                function btnburya() {
+                    $(".tracking-ad[data-mod='popu_223'] a").click();
+                }
+            </script>
+
+   <ul class="article_next_prev">
+                <li class="prev_article"><span  onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shangyipian']);location.href='http://blog.csdn.net/weewqrer/article/details/51840729';">上一篇</span><a href="http://blog.csdn.net/weewqrer/article/details/51840729" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shangyipian'])">手写代码 AVL 二叉平衡树（插入 删除）</a></li>
+                <li class="next_article"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_xiayipian']);location.href='http://blog.csdn.net/weewqrer/article/details/51867045';">下一篇</span><a href="http://blog.csdn.net/weewqrer/article/details/51867045" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_xiayipian'])">经典排序算法--插入排序  希尔排序 归并排序</a></li>
+    </ul>
+
+    <div style="clear:both; height:10px;"></div>
+
+
+            <div class="similar_article"   >
+                    <h4></h4>
+                    <div class="similar_c"style="margin:20px 0px 0px 0px">
+                        <div class="similar_c_t">
+                          &nbsp;&nbsp;相关文章推荐
+                        </div>
+                   
+                        <div class="similar_wrap tracking-ad" data-mod="popu_36" >                       
+                            <ul class="similar_list fl">    
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/chen19870707/article/details/39585277" title="手把手实现红黑树" strategy="BlogCommendFromBaidu" target="_blank">手把手实现红黑树</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/st646889325/article/details/52980452" title="iOS图片边框不拉伸，内容拉伸" strategy="BlogCommendFromBaidu" target="_blank">iOS图片边框不拉伸，内容拉伸</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/mxway/article/details/29216199" title="stl map底层之红黑树插入步骤详解与代码实现" strategy="BlogCommendFromBaidu" target="_blank">stl map底层之红黑树插入步骤详解与代码实现</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/y550918116j/article/details/49994293" title="红黑树" strategy="BlogCommendFromBaidu" target="_blank">红黑树</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/fantasywindy/article/details/5752434" title="经典算法：红黑树的C语言实现 ( 插入 、删除 )" strategy="BlogCommendFromBaidu" target="_blank">经典算法：红黑树的C语言实现 ( 插入 、删除 )</a>
+                                   </li>
+                            </ul>
+                              <ul class="similar_list fr">      
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/binwin20/article/details/17221017" title="红黑树-C语言实现" strategy="BlogCommendFromBaidu" target="_blank">红黑树-C语言实现</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/xiaowang627/article/details/51339959" title="算法导论——红黑树插入算法C++实现" strategy="BlogCommendFromBaidu" target="_blank">算法导论——红黑树插入算法C++实现</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/acm_lkl/article/details/46762115" title="算法导论学习---红黑树详解之插入(C语言实现)" strategy="BlogCommendFromBaidu" target="_blank">算法导论学习---红黑树详解之插入(C语言实现)</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/wangpengqi/article/details/7848808" title="C语言红黑树" strategy="BlogCommendFromBaidu" target="_blank">C语言红黑树</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/u010632868/article/details/38463867" title="用c语言实现红黑树（依据算法导论上的方法）" strategy="BlogCommendFromBaidu" target="_blank">用c语言实现红黑树（依据算法导论上的方法）</a>
+                                   </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>   
+      
+</div>
+
+     <div>
+           
+
+       
+                           
+            <!-- 广告位：PC端-博客内容页-banner1-960*90 --> 
+            <script> 
+                (function() { 
+                    var s = "_" + Math.random().toString(36).slice(2); 
+                    document.write('<div id="' + s + '"></div>'); 
+                    (window.slotbydup=window.slotbydup || []).push({ 
+                        id: '4228013', 
+                        container: s, 
+                        size: '0,0', 
+                        display: 'inlay-fix' 
+                    }); 
+                })(); 
+            </script>
+    </div>
+
+<div id="suggest"></div>
+         <script  language="javascript" type='text/javascript'>     
+             $(function(){
+                 $.get("/weewqrer/svc/GetSuggestContent/51866488",function(data){
+                     $("#suggest").html(data);
+                 });     
+             });             
+         </script>  
+
+        <dl class="blog-ass-articl tracking-ad" id="res-relatived" data-mod="popu_84"  > 
+             <dt><span>猜你在找</span></dt>    
+           
+    
+           
+
+                        <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/30" title="C语言及程序设计（讲师：贺利坚）" strategy="undefined" target="_blank">C语言及程序设计（讲师：贺利坚）</a>
+                        </dd>
+                        <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/379" title="Python爬虫工程师培养课程全套（讲师:韦玮）" strategy="undefined" target="_blank">Python爬虫工程师培养课程全套（讲师:韦玮）</a>
+                        </dd>
+                        <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/468" title="Python全栈开发入门与实战课（讲师：李杰）" strategy="undefined" target="_blank">Python全栈开发入门与实战课（讲师：李杰）</a>
+                        </dd>
+                        <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/233" title="2017软考网络规划设计师视频套餐（讲师：任铄）" strategy="undefined" target="_blank">2017软考网络规划设计师视频套餐（讲师：任铄）</a>
+                        </dd>
+                        <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/169" title="2017软考软件设计师视频套餐（讲师：任铄）" strategy="undefined" target="_blank">2017软考软件设计师视频套餐（讲师：任铄）</a>
+                        </dd>
+                        <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/144" title="2017软考-信息系统项目管理师视频套餐（讲师：任铄）" strategy="undefined" target="_blank">2017软考-信息系统项目管理师视频套餐（讲师：任铄）</a>
+                        </dd>
+                        <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/58" title="软考(高级)项目经理实战营（讲师：张传波）" strategy="undefined" target="_blank">软考(高级)项目经理实战营（讲师：张传波）</a>
+                        </dd>
+                        <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/58" title="微信公众平台开发套餐（讲师：刘运强）" strategy="undefined" target="_blank">微信公众平台开发套餐（讲师：刘运强）</a>
+                        </dd>
+                        <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/422" title="深度学习原理+实战+算法+主流框架套餐（讲师：唐宇迪）" strategy="undefined" target="_blank">深度学习原理+实战+算法+主流框架套餐（讲师：唐宇迪）</a>
+                        </dd>
+                        <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/471" title="2017系统集成项目管理工程师通关套餐（讲师：徐朋）" strategy="undefined" target="_blank">2017系统集成项目管理工程师通关套餐（讲师：徐朋）</a>
+                        </dd>
+        </dl>
+
+
+
+
+            
+                                    
+            
+                                    
+
+        <!-- 广告位开始 -->
+        <!-- 广告位结束 -->
+
+
+<div class="comment_class">
+    <div id="comment_title" class="panel_head">
+        <span class="see_comment">查看评论</span><a name="comments"></a></div>
+    <div id="comment_list">
+    </div>
+    <div id="comment_bar">
+    </div>
+    <div id="comment_form">
+    </div>
+    <div class="announce">
+        * 以上用户言论只代表其个人观点，不代表CSDN网站的观点或立场<a name="reply"></a><a name="quote"></a></div>
+</div>
+
+<script type="text/javascript">
+    var fileName = '51866488';
+    var commentscount = 0;
+    var islock = false
+</script>
+
+    <div id="ad_bot">
+    </div>
+<div id="report_dialog">
+</div>
+
+<div id="d-top"  style="bottom:60px;">
+
+        <a id="quick-reply" class="btn btn-top q-reply" title="快速回复" style="display:none;">
+            <img src="http://static.blog.csdn.net/images/blog-icon-reply.png" alt="快速回复">
+        </a>    
+    <a id="d-top-a" class="btn btn-top backtop"  style="display: none;" title="返回顶部" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_huidaodingbu'])" style="">         
+         <img src="http://static.blog.csdn.net/images/top.png" alt="TOP">
+    </a>
+</div>
+<script type="text/javascript">
+    $(function ()
+    {
+        $("#ad_frm_0").height("90px");
+        
+        setTimeout(function(){
+            $("#ad_frm_2").height("200px");
+        },1000);    
+    });
+  
+</script>
+<style type="text/css">
+    .tag_list
+    {
+        background: none repeat scroll 0 0 #FFFFFF;
+        border: 1px solid #D7CBC1;
+        color: #000000;
+        font-size: 12px;
+        line-height: 20px;
+        list-style: none outside none;
+        margin: 10px 2% 0 1%;
+        padding: 1px;
+    }
+    .tag_list h5
+    {
+        background: none repeat scroll 0 0 #E0DBD3;
+        color: #47381C;
+        font-size: 12px;
+        height: 24px;
+        line-height: 24px;
+        padding: 0 5px;
+        margin: 0;
+    }
+    .tag_list h5 a
+    {
+        color: #47381C;
+    }
+    .classify
+    {
+        margin: 10px 0;
+        padding: 4px 12px 8px;
+    }
+    .classify a
+    {
+        margin-right: 20px;
+        white-space: nowrap;
+    }
+</style>
+
+
+
+
+
+<div id="pop_win" style="display:none ;position: absolute; z-index: 10000; border: 1px solid rgb(220, 220, 220); top: 222.5px; left: 630px; opacity: 1; background: none 0px 0px repeat scroll rgb(255, 255, 255);">
+    
+</div>
+<div id="popup_mask"></div>
+<style>
+    #popup_mask
+    {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        z-index: 9999;
+        left: 0px;
+        top: 0px;
+        opacity: 0.3;
+        filter: alpha(opacity=30);
+        display: none;
+    }
+
+</style>
+
+
+
+
+<script type="text/javascript">
+    $(function(){        
+        
+        setTimeout(function(){
+            $(".comment_body:contains('回复')").each(function(index,item){
+                var u=$(this).text().split('：')[0].toString().replace("回复","")
+                var thisComment=$(this);
+                if(u)
+                {
+                    $.getJSON("https://passport.csdn.net/get/nick?callback=?", {users: u}, function(a) {
+                        if(a!=null&&a.data!=null&&a.data.length>0)
+                        {
+                            nick=a.data[0].n; 
+                            if(u!=nick)
+                            {
+                                thisComment.text(thisComment.text().replace(u,nick));  
+                            }
+                        }       
+                    });  
+                }
+            });         
+
+        },200);  
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },5000);
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },10000);
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },15000);
+        
+        setTimeout(function(){
+            $("a img[src='http://js.tongji.linezing.com/stats.gif']").parent().css({"position":"absolute","left":"50%"});
+        },300);
+    });
+
+    function loginbox(){
+        var $logpop=$("#pop_win");
+        $logpop.html('<iframe src="https://passport.csdn.net/account/loginbox?service=http://static.blog.csdn.net/callback.htm" frameborder="0" height="600" width="400" scrolling="no"></iframe>');
+
+        $('#popup_mask').css({
+            opacity: 0.5,
+            width: $( document ).width() + 'px',
+            height:  $( document ).height() + 'px'
+        });
+        $('#popup_mask').css("display","block");
+ 
+        $logpop.css( {
+            top: ($( window ).height() - $logpop.height())/ 2  + $( window 
+       ).scrollTop() + 'px',
+            left:($( window ).width() - $logpop.width())/ 2
+        } );
+ 
+        setTimeout( function () {
+            $logpop.show();
+            $logpop.css( {
+                opacity: 1
+            } );
+        }, 200 );
+ 
+        $('#popup_mask').unbind("click");
+        $('#popup_mask').bind("click", function(){
+            $('#popup_mask').hide();
+            var $clopop = $("#pop_win");
+            $("#common_ask_div_sc").css("display","none");
+            $clopop.css( {
+                opacity: 0
+            } );
+            setTimeout( function () {
+                $clopop.hide();
+            }, 350 );
+            return false;
+        });
+    }   
+
+    var articletitle='红黑树（附完整C代码）';
+
+</script>
+
+
+
+
+
+
+
+
+
+
+                        <div class="clear">
+                        </div>
+                    </div>                   
+                
+            </div>
+                   
+           <div id="side">
+               
+    <div class="side">
+<div id="panel_Profile" class="panel">
+<ul class="panel_head"><span>个人资料</span></ul>
+<ul class="panel_body profile">
+<div id="blog_userface">
+    <a href="http://my.csdn.net/weewqrer" target="_blank">
+    <img src="http://avatar.csdn.net/E/7/A/1_weewqrer.jpg" title="访问我的空间" style="max-width:90%"/>
+    </a>
+    <br />
+    <span><a href="http://my.csdn.net/weewqrer" class="user_name" target="_blank">weewqrer</a></span>
+</div>
+<div class="interact">
+
+    <a href="javascript:void(0);" class="attent" id="span_add_follow" title="[加关注]"></a>
+
+ <a href="javascript:void(0);" class="letter"  title="[发私信]" onclick="window.open('http://msg.csdn.net/letters/model?receiver=weewqrer','_blank','height=350,width=700');_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_sixin'])"></a>  
+</div>
+<div id="blog_medal">
+                <div id="bms_box">
+                                            <a  target="_blank">
+                                                    <img src="http://c.csdnimg.cn/jifen/images/xunzhang/xunzhang/chizhiyiheng.png" onmouseover="m_over_m(this,4)" onmouseout="m_out_m()" alt="1" >
+                                            </a>
+               </div>
+</div>
+<ul id="blog_rank">
+    <li>访问：<span>10732次</span></li>
+    <li>积分：<span>445</span> </li>    
+    <li >等级： <span style="position:relative;display:inline-block;z-index:1" >
+            <img src="http://c.csdnimg.cn/jifen/images/xunzhang/jianzhang/blog2.png" alt="" style="vertical-align: middle;" id="leveImg">
+            <div id="smallTittle" style=" position: absolute;  left: -24px;  top: 25px;  text-align: center;  width: 101px;  height: 32px;  background-color: #fff;  line-height: 32px;  border: 2px #DDDDDD solid;  box-shadow: 0px 2px 2px rgba (0,0,0,0.1);  display: none;   z-index: 999;">
+            <div style="left: 42%;  top: -8px;  position: absolute;  width: 0;  height: 0;  border-left: 10px solid transparent;  border-right: 10px solid transparent;  border-bottom: 8px solid #EAEAEA;"></div>
+            积分：445 </div>
+        </span>  </li>
+    <li>排名：<span>千里之外</span></li>
+</ul>
+<ul id="blog_statistics">
+    <li>原创：<span>10篇</span></li>
+    <li>转载：<span>4篇</span></li>
+    <li>译文：<span>0篇</span></li>
+    <li>评论：<span>1条</span></li>
+</ul>
+</ul>
+</div>
+
+
+<div class="panel" id="panel_Search">
+    <ul class="panel_head"><span>文章搜索</span></ul>
+    <ul class="panel_body" class="form_search">
+        <form id="frmSearch" action="http://so.csdn.net/search" class="form_search csdn-tracking-statistics" target="_blank"  data-mod="popu_306">
+        <span><input id="inputSearch" type="text" class="blogsearch" title="请输入关键字" /></span>
+        <input id="btnSubmit" type="button" value="搜索" title="search in blog" />
+        <input type="hidden" name="q" id="inputQ" />
+        <input type="hidden" name="t" value="blog" />
+        <a id="btnSearchBlog" target="_blank"></a>
+        </form>
+    </ul>
+</div>
+
+<script type="text/javascript">
+
+   
+    $(function () {
+        $("#btnSubmit").unbind("click");
+        $("#btnSubmit").click(function () {           
+            search();
+        });
+
+        $("#frmSearch").submit(function () {           
+            search();
+            return false;
+        });
+
+        function search()
+        {
+            if ($("#inputSearch").val() == "") {               
+                alert("请录入搜索关键词！");                         
+                return false;
+            }
+            //var url = "http://so.csdn.net/so/search/s.do?q=" + encodeURIComponent($("#inputSearch").val()) + "&u=" + username + "&t=blog";           
+            var url = "https://www.baidu.com/s?wd=" + encodeURIComponent($("#inputSearch").val()) + "%20site%3Ablog.csdn.net"
+            window.location.href = url;
+        }   
+    });
+</script><div id="panel_Category" class="panel">
+<ul class="panel_head"><span>文章分类</span></ul>
+<ul class="panel_body">    
+                 <li>
+                    <a href="/weewqrer/article/category/5778851" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">算法</a><span>(4)</span>
+                </li>
+                 <li>
+                    <a href="/weewqrer/article/category/5787561" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">ros</a><span>(3)</span>
+                </li>
+                 <li>
+                    <a href="/weewqrer/article/category/5815041" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">云计算</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/weewqrer/article/category/5908991" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">django</a><span>(0)</span>
+                </li>
+                 <li>
+                    <a href="/weewqrer/article/category/5909001" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">个人笔记</a><span>(0)</span>
+                </li>
+                 <li>
+                    <a href="/weewqrer/article/category/5917609" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">hadoop</a><span>(4)</span>
+                </li>
+                 <li>
+                    <a href="/weewqrer/article/category/6047934" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">java</a><span>(1)</span>
+                </li>
+</ul>
+</div><div id="panel_Archive" class="panel">
+<ul class="panel_head"><span>文章存档</span></ul>
+<ul class="panel_body">
+<div id="archive_list">
+<!--归档统计-->
+<li><a href="/weewqrer/article/month/2016/07">2016年07月</a><span>(5)</span></li><li><a href="/weewqrer/article/month/2015/11">2015年11月</a><span>(2)</span></li><li><a href="/weewqrer/article/month/2015/10">2015年10月</a><span>(2)</span></li><li><a href="/weewqrer/article/month/2015/09">2015年09月</a><span>(5)</span></li><li><a href="/weewqrer/article/month/2015/08">2015年08月</a><span>(1)</span></li>
+</div>
+</ul>
+</div>
+<div id="hotarticls" class="panel tracking-ad" data-mod="popu_340">
+<ul class="panel_head">
+    <span>       
+阅读排行    </span>
+</ul>
+
+<ul class="panel_body itemlist">
+<li>
+<a href="/weewqrer/article/details/51866488" title="红黑树（附完整C代码）">红黑树（附完整C代码）</a><span>(2804)</span>
+</li>
+<li>
+<a href="/weewqrer/article/details/48183969" title="ubuntu+ROS+kinect进行骨架跟踪">ubuntu+ROS+kinect进行骨架跟踪</a><span>(2295)</span>
+</li>
+<li>
+<a href="/weewqrer/article/details/51913194" title="java异常处理">java异常处理</a><span>(1257)</span>
+</li>
+<li>
+<a href="/weewqrer/article/details/48211895" title="ROS(一) 写自己的节点">ROS(一) 写自己的节点</a><span>(851)</span>
+</li>
+<li>
+<a href="/weewqrer/article/details/48436731" title="ROS(二) 在多个电脑上运行ROS">ROS(二) 在多个电脑上运行ROS</a><span>(702)</span>
+</li>
+<li>
+<a href="/weewqrer/article/details/49623573" title="Hadoop---安装Fuse-DFS（难）">Hadoop---安装Fuse-DFS（难）</a><span>(612)</span>
+</li>
+<li>
+<a href="/weewqrer/article/details/51840729" title="手写代码 AVL 二叉平衡树（插入 删除）">手写代码 AVL 二叉平衡树（插入 删除）</a><span>(326)</span>
+</li>
+<li>
+<a href="/weewqrer/article/details/49623087" title="Hadoop---安装thrift">Hadoop---安装thrift</a><span>(314)</span>
+</li>
+<li>
+<a href="/weewqrer/article/details/48447055" title="揭秘云计算  为应用程序选择最佳云计算平台">揭秘云计算  为应用程序选择最佳云计算平台</a><span>(279)</span>
+</li>
+<li>
+<a href="/weewqrer/article/details/51867045" title="经典排序算法--插入排序  希尔排序 归并排序">经典排序算法--插入排序  希尔排序 归并排序</a><span>(216)</span>
+</li>
+</ul>
+</div>
+<div id="hotarticls2" class="panel tracking-ad" data-mod="popu_341">
+<ul class="panel_head"><span>评论排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="/weewqrer/article/details/48183969" title="ubuntu+ROS+kinect进行骨架跟踪">ubuntu+ROS+kinect进行骨架跟踪</a><span>(1)</span>
+</li>
+<li>
+<a href="/weewqrer/article/details/51918706" title="包含min函数的栈 java实现">包含min函数的栈 java实现</a><span>(0)</span>
+</li>
+<li>
+<a href="/weewqrer/article/details/49623573" title="Hadoop---安装Fuse-DFS（难）">Hadoop---安装Fuse-DFS（难）</a><span>(0)</span>
+</li>
+<li>
+<a href="/weewqrer/article/details/49623087" title="Hadoop---安装thrift">Hadoop---安装thrift</a><span>(0)</span>
+</li>
+<li>
+<a href="/weewqrer/article/details/49530595" title="Hadoop---HBase伪分布安装">Hadoop---HBase伪分布安装</a><span>(0)</span>
+</li>
+<li>
+<a href="/weewqrer/article/details/49530471" title="Hadoop---HBase的安装">Hadoop---HBase的安装</a><span>(0)</span>
+</li>
+<li>
+<a href="/weewqrer/article/details/48474963" title="用动态规划的方法解决LCS(最长公共子序列)的问题">用动态规划的方法解决LCS(最长公共子序列)的问题</a><span>(0)</span>
+</li>
+<li>
+<a href="/weewqrer/article/details/48447055" title="揭秘云计算  为应用程序选择最佳云计算平台">揭秘云计算  为应用程序选择最佳云计算平台</a><span>(0)</span>
+</li>
+<li>
+<a href="/weewqrer/article/details/48436731" title="ROS(二) 在多个电脑上运行ROS">ROS(二) 在多个电脑上运行ROS</a><span>(0)</span>
+</li>
+<li>
+<a href="/weewqrer/article/details/48211895" title="ROS(一) 写自己的节点">ROS(一) 写自己的节点</a><span>(0)</span>
+</li>
+</ul>
+</div>
+<div id="homepageArticles" class="panel tracking-ad" data-mod="popu_4">
+<ul class="panel_head"><span>推荐文章</span></ul>
+<ul class="panel_body" id="ad_commend">
+<ul>
+<li><a href="http://blog.csdn.net/blogdevteam/article/details/75116901" target="_blank">* CSDN日报20170714——《从创业到再就业，浅述对程序员职业生涯的看法》</a></li>
+<li><a href="http://blog.csdn.net/jiangwei0910410003/article/details/74886918" 
+target="_blank">* Android 逆向 | 锁屏密码算法解析以及破解方案</a></li>
+<li><a href="http://blog.csdn.net/hopeztm/article/details/75201823"target="_blank">* 从单一WAR到多活，记述一个创业公司的架构演变</a></li>
+<li><a href="http://blog.csdn.net/sileixinhua/article/details/75203725" 
+target="_blank">* 我的AI转型之路与AI之我见（非985211的奋斗路程与视角）</a></li>
+<li><a href="http://blog.csdn.net/u013709270/article/details/74892124" 
+target="_blank">* AI大行其道，你准备好了吗？—谨送给徘徊于转行AI的程序员</a></li>
+<li><a href="http://blog.csdn.net/chancein007/article/details/74943322" 
+target="_blank">* AI转型中的思考和洞见</a></li>
+
+</ul></ul>
+</div>
+
+
+<div id="newcomments" class="panel">
+<ul class="panel_head"><span>最新评论</span></ul>
+<ul class="panel_body itemlist">
+    <li>
+   
+         <a href="/weewqrer/article/details/48183969#comments">ubuntu+ROS+kinect进行骨架跟踪</a>
+    <p style="margin:0px;"><a href="/wszhaoyang" class="user_name">wszhaoyang</a>:
+师兄，你那个网址现在打不开了（都是苹果的锅）你下好的还有留着吗？我指的是这个，NITE-Bin-Li...
+    </p>
+    </li>
+</ul>
+</div>
+    </div>
+    <div class="clear">
+    </div>
+
+                   <!-- 广告位开始 -->                    <!-- 广告位结束 -->
+                   <div class="tracking-ad" data-view="true"  data-mtp="63" data-order="40" data-con="ad_content_1260" style="width: 200px; height: 500px;">
+                         <div id="nav_show_top_stop" style="width: 200px;height: 500px;z-index:1000"><div id="cpro_u2734128"></div>
+                             <div id="cpro_u3031287"></div></div>
+                   </div>
+    <script type="text/javascript">
+        setTimeout(function () {
+            var naviga_offsetTop = 0;
+            function naviga_stay_top() { var scrollTop = jQuery(document).scrollTop(); if (scrollTop > naviga_offsetTop) { jQuery("#nav_show_top_stop").css({ "position": "fixed" }); jQuery("#nav_show_top_stop").css({ "top": "0px" }); } else { jQuery("#nav_show_top_stop").css({ "position": "fixed" }); jQuery("#nav_show_top_stop").css({ "top": naviga_offsetTop - scrollTop + "px" }); } }
+            function onload_function() { naviga_offsetTop = jQuery("#nav_show_top_stop").position().top; jQuery(window).bind("scroll", naviga_stay_top); jQuery(window).bind("mousewheel", naviga_stay_top); jQuery(document).bind("scroll", naviga_stay_top); jQuery(document).bind("mousewheel", naviga_stay_top); } jQuery(document).ready(onload_function);
+
+        }, 200);
+    </script>
+<script type="text/javascript">(window.cproArray = window.cproArray || []).push({ id: "u2734128" });  </script> 
+                    <script src="http://cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript"></script> 
+                   <script type="text/javascript">
+                       /*PC端-博客内容页左侧Button2-200*200-2017/7/10*/
+                       (window.cproArray = window.cproArray || []).push({ id: "u3031287" });
+</script>
+<script type="text/javascript" src="http://cpro.baidustatic.com/cpro/ui/c.js"></script>
+
+           </div>   
+
+            <div class="clear">
+            </div>
+        </div>
+
+        
+
+
+
+
+
+
+
+
+    <script type="text/javascript" src="http://passport.csdn.net/content/loginbox/login.js"></script>
+<script type="text/javascript">
+    $(function () {
+        function __get_code_toolbar(snippet_id) {
+            return $("<span class='tracking-ad' data-mod='popu_167'><a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "' target='_blank' title='在CODE上查看代码片'  style='text-indent:0;'><img src='https://code.csdn.net/assets/CODE_ico.png' width=12 height=12 alt='在CODE上查看代码片' style='position:relative;top:1px;left:2px;'/></a></span>"
+                    + "<span class='tracking-ad' data-mod='popu_170'><a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "/fork' target='_blank' title='派生到我的代码片' style='text-indent:0;'><img src='https://code.csdn.net/assets/ico_fork.svg' width=12 height=12 alt='派生到我的代码片' style='position:relative;top:2px;left:2px;'/></a></span>");
+        }
+        
+        $("[code_snippet_id]").each(function () {
+            __s_id = $(this).attr("code_snippet_id");
+            if (__s_id != null && __s_id != "" && __s_id != 0 && parseInt(__s_id) > 70020) {
+                __code_tool = __get_code_toolbar(__s_id);
+                $(this).prev().find(".tools").append(__code_tool);
+            }
+        });
+
+        $(".bar").show();
+    });
+</script>
+
+
+
+
+
+    </div>
+      <!--new top-->
+    
+
+     
+
+   
+   
+     <!--new top-->
+   
+   
+
+    
+    
+    
+   
+
+   
+
+
+       <script type="text/javascript" src="http://static.blog.csdn.net/public/res/bower-libs/MathJax/MathJax.js?config=TeX-AMS_HTML"></script>
+          <script type="text/javascript">
+              //$(function () {
+              //    setTimeout(function () {
+              //        var searchtitletags = articletitle + ',' + $("#tags").html();
+              //        searchService({
+              //            index: 'blog',
+              //            query: searchtitletags,
+              //            from: 5,
+              //            size: 5,
+              //            appendTo: '#res',
+              //            url: 'recommend',
+              //            his: 2,
+              //            client: "blog_cf_enhance",
+              //            tmpl: '<dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="#{ url }" title="#{ title }" strategy="#{ strategy }">#{ title }</a></dd>'
+              //        });
+              //    }, 1000);
+              //});
+
+         </script>
+    
+    <script src="http://static.blog.csdn.net/scripts/csdn_blog_detail.min.js" type="text/javascript"></script>
+        
+    <script type="text/javascript" src="http://c.csdnimg.cn/blog/csdn_public_blog_detail.min.js?20170719001"></script>
+
+    <script type="text/javascript" src="http://medal.blog.csdn.net/showblogmedal.ashx?blogid=5413585"></script>
+
+     
+    
+
+
+  <div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+                    <script id="adJs52b5334"></script>
+                    <script>document.getElementById("adJs52b5334").src = "http://ads.csdn.net/js/opt/52b5334.js?t=" + Math.random();</script>
+   </div>
+
+    
+    
+        
+     
+
+    
+          
+    <div class="pop_CA_cover"  style="display:none"></div>
+    <div class="pop pop_CA"  style="display:none">
+          <div class="CA_header">
+            收藏助手
+            <span class="cancel_icon"  id="fapancle"  onclick="$('.pop_CA').hide();$('.pop_CA_cover').hide();"></span>
+          </div>
+          <iframe src="" id="fa" frameborder="0" width="100%" height="360"  scrolling="no" ></iframe>
+    </div>
+
+
+        <script type="text/javascript">
+
+            $(function () {
+                var fromjs = $("#fromjs");
+                if (fromjs.length > 0) {
+                    $("#fromjs .markdown_views pre").addClass("prettyprint");
+                    prettyPrint();
+
+                    $('pre.prettyprint code').each(function () {
+                        var lines = $(this).text().split('\n').length;
+                        var $numbering = $('<ul/>').addClass('pre-numbering').hide();
+                        $(this).addClass('has-numbering').parent().append($numbering);
+                        for (i = 1; i <= lines; i++) {
+                            $numbering.append($('<li/>').text(i));
+                        };
+                        $numbering.fadeIn(1700);
+                    });
+
+                    $('.pre-numbering li').css("color", "#999");
+                }
+            });
+
+            $(".markdown_views a[target!='_blank']").attr("target", "_blank");
+
+            //$(".toc a[target='_blank']").attr("target", "");
+
+            setTimeout(function () {
+                $(".toc a[target='_blank']").attr("target", "");
+            }, 500);
+
+        </script>
+
+</body>
+</html>   
